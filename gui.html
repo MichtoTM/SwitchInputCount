@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch Input Comptor</title>
+    <style>
+        body {
+            font-family: 'Cascadia Code', monospace;
+            background-color: #000;
+            color: #fff;
+            margin: 20px;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #00FF00; /* Titre en vert */
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #fff; /* Couleur blanche par défaut */
+        }
+        .key-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #111;
+            border-radius: 5px;
+        }
+        .key-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #444;
+            border: 1px solid #777;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .progress {
+            height: 25px;
+            background-color: #4caf50;
+            text-align: center;
+            box-sizing: border-box;
+            color: white;
+            font-weight: bold;
+            line-height: 25px;
+            border-radius: 5px 0 0 5px;
+            position: relative;
+        }
+        .progress span {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Titre de la page -->
+    <h1>Switch Input Comptor</h1>
+    <!-- Mention de développement -->
+    <h2>Developed by MichtOo</h2>
+    <!-- Conteneur pour les statistiques de touches -->
+    <div id="keyCounts"></div>
+
+    <script>
+        // Fonction pour charger les données du fichier count.txt
+        async function loadKeyCounts() {
+            const response = await fetch('count.txt');
+            const text = await response.text();
+            const keyCounts = parseCounts(text);
+            displayCounts(keyCounts);
+        }
+
+        // Fonction pour analyser les données du fichier et les trier par ordre décroissant
+        function parseCounts(text) {
+            const lines = text.trim().split('\n');
+            const counts = {};
+
+            for (let line of lines) {
+                const [key, countHex] = line.split(': ');
+                if (key && countHex) {
+                    const count = parseInt(countHex, 16);
+                    counts[key.trim().toUpperCase()] = count;
+                }
+            }
+
+            // Trier les clés par nombre d'appuis décroissant
+            return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+        }
+
+        // Fonction pour afficher les données sur la page
+        function displayCounts(counts) {
+            const container = document.getElementById('keyCounts');
+            const maxCount = 20000000;
+
+            counts.forEach(([key, count]) => {
+                // Créer un conteneur pour chaque touche
+                const keyContainer = document.createElement('div');
+                keyContainer.className = 'key-container';
+
+                // Créer un label pour le nom de la touche
+                const label = document.createElement('div');
+                label.className = 'key-label';
+                label.textContent = `${key}`;
+
+                // Créer une barre de progression
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+
+                // Créer l'élément de progression et y ajouter le nombre d'appuis
+                const progress = document.createElement('div');
+                progress.className = 'progress';
+                progress.style.width = `${(count / maxCount) * 100}%`;
+
+                const countText = document.createElement('span');
+                countText.textContent = count;
+
+                // Ajouter le texte de comptage à la barre de progression
+                progress.appendChild(countText);
+                progressBar.appendChild(progress);
+                keyContainer.appendChild(label);
+                keyContainer.appendChild(progressBar);
+                container.appendChild(keyContainer);
+            });
+        }
+
+        // Charger les données au chargement de la page
+        loadKeyCounts();
+    </script>
+</body>
+</html>

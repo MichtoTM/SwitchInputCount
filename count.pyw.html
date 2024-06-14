@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>count.pyw</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #7a7e85;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+count.pyw</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">keyboard</span>
+<span class="s0">import </span><span class="s1">time</span>
+<span class="s0">import </span><span class="s1">os</span>
+
+<span class="s2"># Chemin absolu vers count.txt</span>
+<span class="s1">file_path </span><span class="s3">= </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">join</span><span class="s3">(</span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">dirname</span><span class="s3">(</span><span class="s1">__file__</span><span class="s3">), </span><span class="s4">'count.txt'</span><span class="s3">)</span>
+
+<span class="s0">def </span><span class="s1">Save</span><span class="s3">():</span>
+    <span class="s1">KeyCountVars_hex </span><span class="s3">= {</span><span class="s1">key</span><span class="s3">: </span><span class="s1">hex</span><span class="s3">(</span><span class="s1">value</span><span class="s3">) </span><span class="s0">for </span><span class="s1">key</span><span class="s3">, </span><span class="s1">value </span><span class="s0">in </span><span class="s1">KeyCountVars</span><span class="s3">.</span><span class="s1">items</span><span class="s3">()}</span>
+    <span class="s0">try</span><span class="s3">:</span>
+        <span class="s0">with </span><span class="s1">open</span><span class="s3">(</span><span class="s1">file_path</span><span class="s3">, </span><span class="s4">'w'</span><span class="s3">) </span><span class="s0">as </span><span class="s1">fichier</span><span class="s3">:</span>
+            <span class="s0">for </span><span class="s1">key</span><span class="s3">, </span><span class="s1">value </span><span class="s0">in </span><span class="s1">KeyCountVars_hex</span><span class="s3">.</span><span class="s1">items</span><span class="s3">():</span>
+                <span class="s1">fichier</span><span class="s3">.</span><span class="s1">write</span><span class="s3">(</span><span class="s4">f&quot;</span><span class="s0">{</span><span class="s1">key</span><span class="s0">}</span><span class="s4">: </span><span class="s0">{</span><span class="s1">value</span><span class="s0">}\n</span><span class="s4">&quot;</span><span class="s3">)</span>
+    <span class="s0">except </span><span class="s1">PermissionError</span><span class="s3">:</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s4">f&quot;Erreur de permission : impossible d'écrire dans </span><span class="s0">{</span><span class="s1">file_path</span><span class="s0">}</span><span class="s4">&quot;</span><span class="s3">)</span>
+
+<span class="s1">KeyCountVars </span><span class="s3">= {}</span>
+
+<span class="s0">def </span><span class="s1">LoadSave</span><span class="s3">():</span>
+    <span class="s0">global </span><span class="s1">KeyCountVars</span>
+    <span class="s0">try</span><span class="s3">:</span>
+        <span class="s0">with </span><span class="s1">open</span><span class="s3">(</span><span class="s1">file_path</span><span class="s3">, </span><span class="s4">'r'</span><span class="s3">) </span><span class="s0">as </span><span class="s1">fichier</span><span class="s3">:</span>
+            <span class="s0">for </span><span class="s1">ligne </span><span class="s0">in </span><span class="s1">fichier</span><span class="s3">:</span>
+                <span class="s1">partie </span><span class="s3">= </span><span class="s1">ligne</span><span class="s3">.</span><span class="s1">strip</span><span class="s3">().</span><span class="s1">split</span><span class="s3">(</span><span class="s4">': '</span><span class="s3">)</span>
+                <span class="s0">if </span><span class="s1">len</span><span class="s3">(</span><span class="s1">partie</span><span class="s3">) == </span><span class="s5">2</span><span class="s3">:</span>
+                    <span class="s1">key</span><span class="s3">, </span><span class="s1">value_hex </span><span class="s3">= </span><span class="s1">partie</span>
+                    <span class="s1">value </span><span class="s3">= </span><span class="s1">int</span><span class="s3">(</span><span class="s1">value_hex</span><span class="s3">, </span><span class="s5">16</span><span class="s3">)</span>
+                    <span class="s1">KeyCountVars</span><span class="s3">[</span><span class="s1">key</span><span class="s3">] = </span><span class="s1">value</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s4">&quot;Chargement du fichier count.txt réussi.&quot;</span><span class="s3">)</span>
+    <span class="s0">except </span><span class="s1">FileNotFoundError</span><span class="s3">:</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s4">f&quot;Le fichier </span><span class="s0">{</span><span class="s1">file_path</span><span class="s0">} </span><span class="s4">n'existe pas.&quot;</span><span class="s3">)</span>
+    <span class="s0">except </span><span class="s1">PermissionError</span><span class="s3">:</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s4">f&quot;Erreur de permission : impossible de lire dans </span><span class="s0">{</span><span class="s1">file_path</span><span class="s0">}</span><span class="s4">&quot;</span><span class="s3">)</span>
+
+<span class="s0">def </span><span class="s1">KeyCount</span><span class="s3">(</span><span class="s1">e</span><span class="s3">):</span>
+    <span class="s0">if </span><span class="s1">e</span><span class="s3">.</span><span class="s1">event_type </span><span class="s3">== </span><span class="s1">keyboard</span><span class="s3">.</span><span class="s1">KEY_UP</span><span class="s3">:</span>
+        <span class="s1">key_name </span><span class="s3">= </span><span class="s1">e</span><span class="s3">.</span><span class="s1">name</span><span class="s3">.</span><span class="s1">lower</span><span class="s3">()</span>
+        <span class="s0">if </span><span class="s1">key_name </span><span class="s0">not in </span><span class="s1">KeyCountVars</span><span class="s3">:</span>
+            <span class="s1">KeyCountVars</span><span class="s3">[</span><span class="s1">key_name</span><span class="s3">] = </span><span class="s5">0</span>
+        <span class="s1">KeyCountVars</span><span class="s3">[</span><span class="s1">key_name</span><span class="s3">] += </span><span class="s5">1</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s4">f&quot;Vous avez appuyé sur </span><span class="s0">{</span><span class="s1">key_name</span><span class="s3">.</span><span class="s1">capitalize</span><span class="s3">()</span><span class="s0">} {</span><span class="s1">KeyCountVars</span><span class="s3">[</span><span class="s1">key_name</span><span class="s3">]</span><span class="s0">} </span><span class="s4">fois.&quot;</span><span class="s3">)</span>
+        <span class="s1">Save</span><span class="s3">()</span>
+
+<span class="s0">try</span><span class="s3">:</span>
+    <span class="s1">LoadSave</span><span class="s3">()</span>
+<span class="s0">except </span><span class="s1">Exception </span><span class="s0">as </span><span class="s1">e</span><span class="s3">:</span>
+    <span class="s1">print</span><span class="s3">(</span><span class="s4">f&quot;Erreur lors du chargement de count.txt : </span><span class="s0">{</span><span class="s1">e</span><span class="s0">}</span><span class="s4">&quot;</span><span class="s3">)</span>
+
+<span class="s1">keyboard</span><span class="s3">.</span><span class="s1">hook</span><span class="s3">(</span><span class="s1">KeyCount</span><span class="s3">)</span>
+
+<span class="s1">print</span><span class="s3">(</span><span class="s4">&quot;Appuyez sur une touche pour compter le nombre d'appuis (Ctrl+C pour quitter) :&quot;</span><span class="s3">)</span>
+<span class="s0">try</span><span class="s3">:</span>
+    <span class="s0">while True</span><span class="s3">:</span>
+        <span class="s1">time</span><span class="s3">.</span><span class="s1">sleep</span><span class="s3">(</span><span class="s5">1</span><span class="s3">)</span>
+<span class="s0">except </span><span class="s1">KeyboardInterrupt</span><span class="s3">:</span>
+    <span class="s0">pass</span>
+<span class="s0">finally</span><span class="s3">:</span>
+    <span class="s1">keyboard</span><span class="s3">.</span><span class="s1">unhook_all</span><span class="s3">()</span>
+    <span class="s1">Save</span><span class="s3">()</span>
+</pre>
+</body>
+</html>
