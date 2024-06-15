@@ -50,11 +50,15 @@ def KeyCount(e):
                 button_name = "Right Click"
             elif e.button == mouse.MIDDLE:
                 button_name = "Wheel CLick"
+            elif e.button == mouse.X2:
+                button_name = "Side Front CLick"
+            elif e.button == mouse.X:
+                button_name = "Side Back CLick"
             elif e.button == mouse.X and e.event_type == mouse.UP:
                 if e.button == 0:
-                    button_name = "Front Side Button"
+                    button_name = "Side Back Button"
                 elif e.button == 1:
-                    button_name = "Back Side Button"
+                    button_name = "Side Front Button"
             if button_name:
                 if button_name not in KeyCountVars:
                     KeyCountVars[button_name] = 0
